@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.ui.theme
+package com.example.smarttasktracker.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

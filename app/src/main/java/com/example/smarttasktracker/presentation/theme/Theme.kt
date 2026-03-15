@@ -1,6 +1,5 @@
-package com.example.smarttasktracker.ui.theme
+package com.example.smarttasktracker.presentation.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

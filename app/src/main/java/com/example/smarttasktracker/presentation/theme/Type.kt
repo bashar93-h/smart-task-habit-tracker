@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.ui.theme
+package com.example.smarttasktracker.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
