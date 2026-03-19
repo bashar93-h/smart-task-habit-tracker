@@ -78,6 +78,11 @@ dependencies {
     // Coroutines
     implementation(libs.coroutines)
 
+//    Google fonts
+    implementation(libs.google.fonts)
+
+    // Feather icons
+    implementation(libs.feather.icons)
 
 
     androidTestImplementation(libs.androidx.junit)

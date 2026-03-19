@@ -18,6 +18,8 @@ work = "2.9.0"
 lifecycle = "2.7.0"
 coroutines = "1.7.3"
 ksp = "2.0.21-1.0.28"
+google-fonts = "1.10.5"
+compose-icons = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,21 +46,26 @@ hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.re
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 # Coil
-coil-compose = {module = "io.coil-kt:coil-compose", version.ref = "coil"}
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 # Room
-room-runtime = {module = "androidx.room:room-runtime", version.ref = "room"}
-room-ktx = {module = "androidx.room:room-ktx", version.ref = "room"}
-room-compiler = {module="androidx.room:room-compiler", version.ref = "room"}
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 # WorkManager
-work-runtime = {module = "androidx.work:work-runtime-ktx", version.ref = "work"}
+work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 # Lifecycle / ViewModel
-lifecycle-viewmodel = {module ="androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle"}
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 # Coroutines
-coroutines = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines"}
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+# Google fonts
+google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "google-fonts" }
+# Feather Icons
+feather-icons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "compose-icons" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
-ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
 
