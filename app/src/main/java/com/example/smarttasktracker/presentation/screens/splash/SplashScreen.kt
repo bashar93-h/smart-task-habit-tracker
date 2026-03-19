@@ -59,10 +59,10 @@ private val enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { 30 }
 @Composable
 fun SplashScreen(navController: NavController? = null) {
 
-    var showMascot by remember { mutableStateOf(false) }
-    var showTitle by remember { mutableStateOf(false) }
-    var showTagline by remember { mutableStateOf(false) }
-    var showBadges by remember { mutableStateOf(false) }
+    var showMascot by remember { mutableStateOf(true) }
+    var showTitle by remember { mutableStateOf(true) }
+    var showTagline by remember { mutableStateOf(true) }
+    var showBadges by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         delay(200); showMascot = true
@@ -114,7 +114,7 @@ fun SplashScreen(navController: NavController? = null) {
                         text = "Trackify",
                         fontSize = 44.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = PrimaryPink,
+                        color = Primary,
                         letterSpacing = (-1).sp
                     )
                 }
