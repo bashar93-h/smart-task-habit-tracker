@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
+import com.example.smarttasktracker.presentation.theme.Primary
+import com.example.smarttasktracker.presentation.theme.PrimaryDark
 import com.example.smarttasktracker.presentation.theme.TextPrimary
 import com.example.smarttasktracker.presentation.theme.TextSecondary
 import com.example.smarttasktracker.presentation.theme.TopBarBg
@@ -39,7 +41,7 @@ fun AppTopBar(title: String, onMenuClick: () -> Unit, onQuoteClick: () -> Unit) 
             }
         }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = TopBarBg,
-            titleContentColor = TextPrimary,
+            titleContentColor = Primary,
             navigationIconContentColor = TextSecondary,
             actionIconContentColor = TextSecondary
         )
