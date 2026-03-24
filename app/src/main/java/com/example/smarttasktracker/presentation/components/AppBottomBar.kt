@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +31,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.smarttasktracker.presentation.navigation.BottomNavItem
 import com.example.smarttasktracker.presentation.navigation.Screen
+import com.example.smarttasktracker.presentation.theme.Primary
+import com.example.smarttasktracker.presentation.theme.TextPrimary
+import com.example.smarttasktracker.presentation.theme.TextSecondary
 import com.example.smarttasktracker.presentation.theme.TopBarBg
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.CheckSquare
@@ -41,20 +45,20 @@ import compose.icons.feathericons.Square
 val bottomNavItems = listOf(
     BottomNavItem(
         label = "Home",
-        icon = FeatherIcons.Home,           // unselected
-        selectedIcon = FeatherIcons.Home, // selected
+        icon = FeatherIcons.Home,
+        selectedIcon = FeatherIcons.Home,
         route = Screen.Home.route
     ),
     BottomNavItem(
         label = "Tasks",
-        icon = FeatherIcons.Square,        // unselected
-        selectedIcon = FeatherIcons.CheckSquare,   // selected
+        icon = FeatherIcons.Square,
+        selectedIcon = FeatherIcons.CheckSquare,
         route = Screen.Tasks.route
     ),
     BottomNavItem(
         label = "Habits",
-        icon = FeatherIcons.Repeat,         // unselected
-        selectedIcon = FeatherIcons.Circle,    // selected
+        icon = FeatherIcons.Repeat,
+        selectedIcon = FeatherIcons.Circle,
         route = Screen.Habits.route
     )
 )
@@ -68,16 +72,16 @@ fun AppBottomBar(navController: NavController?) {
 
     NavigationBar(
         containerColor = TopBarBg,
-        tonalElevation = 8.dp,
+        tonalElevation = 0.dp,
         modifier = Modifier
             .fillMaxWidth()
+            .height(90.dp)
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-            .height(64.dp)
     ) {
         bottomNavItems.forEach { item ->
             val isSelected = currentRoute == item.route
             val iconSize by animateDpAsState(
-                targetValue = if (isSelected) 26.dp else 22.dp,
+                targetValue = if (isSelected) 24.dp else 22.dp,
                 animationSpec = spring(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                     stiffness = Spring.StiffnessMedium
@@ -87,9 +91,9 @@ fun AppBottomBar(navController: NavController?) {
 
             val labelColor by animateColorAsState(
                 targetValue = if (isSelected)
-                    MaterialTheme.colorScheme.primary
+                    Primary
                 else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
+                    TextPrimary,
                 animationSpec = tween(300),
                 label = "labelColor"
             )
@@ -99,7 +103,7 @@ fun AppBottomBar(navController: NavController?) {
                 onClick = {
                     if (!isSelected) {
                         navController?.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId) {
+                            popUpTo(Screen.Home.route) {
                                 saveState = true
                             }
                             launchSingleTop = true
@@ -128,9 +132,9 @@ fun AppBottomBar(navController: NavController?) {
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                    selectedIconColor = Primary,
+                    unselectedIconColor = TextSecondary,
+                    indicatorColor = Color.Transparent,
                 ),
                 modifier = Modifier.padding(0.dp)
             )
