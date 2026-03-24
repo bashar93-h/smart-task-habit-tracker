@@ -2,4 +2,8 @@ package com.example.smarttasktracker.presentation.mock
 
 import com.example.smarttasktracker.domain.model.Quote
 
-val staticQuote = Quote("The secret of getting ahead is getting started.", "Mark Twain")
+val staticQuote = Quote(
+    "Growth begins where comfort ends,\n" +
+            "Every step forward counts, even the small ones,\n" +
+            "And persistence turns effort into success.\n.", "Mark Twain"
+)
