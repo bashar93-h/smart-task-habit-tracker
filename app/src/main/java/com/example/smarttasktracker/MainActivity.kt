@@ -20,13 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SmartTaskTrackerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Surface(
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        AppNavigation()
-                    }
-                }
+                AppNavigation()
             }
         }
     }
