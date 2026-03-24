@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.presentation.screens.taskdetails
+package com.example.smarttasktracker.presentation.screens.taskDetails
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
