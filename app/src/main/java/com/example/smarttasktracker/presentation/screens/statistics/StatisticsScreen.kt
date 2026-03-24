@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.presentation.screens.tasks
+package com.example.smarttasktracker.presentation.screens.statistics
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,9 +12,9 @@ import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppTopBar
 
 @Composable
-fun TasksScreen(navController: NavController) {
+fun StatisticsScreen(navController: NavController) {
     Scaffold(topBar = {
-        AppTopBar("Tasks", onMenuClick = {}, onQuoteClick = {})
+        AppTopBar("Statistics", onMenuClick = {}, onQuoteClick = {})
     }, bottomBar = { AppBottomBar(navController) }) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) { }
     }

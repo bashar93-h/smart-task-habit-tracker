@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.presentation.screens.addhabit
+package com.example.smarttasktracker.presentation.screens.addHabit
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface

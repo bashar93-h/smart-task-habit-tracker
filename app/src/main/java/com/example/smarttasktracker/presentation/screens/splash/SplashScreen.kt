@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +37,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.smarttasktracker.R
-import com.example.smarttasktracker.presentation.theme.*
+import com.example.smarttasktracker.presentation.navigation.Screen
+import com.example.smarttasktracker.presentation.theme.BadgeBlueBg
+import com.example.smarttasktracker.presentation.theme.BadgeBlueTx
+import com.example.smarttasktracker.presentation.theme.BadgeGreenBg
+import com.example.smarttasktracker.presentation.theme.BadgeGreenTx
+import com.example.smarttasktracker.presentation.theme.BadgePinkBg
+import com.example.smarttasktracker.presentation.theme.BadgePinkTx
+import com.example.smarttasktracker.presentation.theme.Primary
+import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
+import com.example.smarttasktracker.presentation.theme.TextMuted
 import kotlinx.coroutines.delay
 
 
@@ -59,23 +69,25 @@ private val enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { 30 }
 @Composable
 fun SplashScreen(navController: NavController? = null) {
 
-    var showMascot by remember { mutableStateOf(true) }
-    var showTitle by remember { mutableStateOf(true) }
-    var showTagline by remember { mutableStateOf(true) }
-    var showBadges by remember { mutableStateOf(true) }
+    var showMascot by remember { mutableStateOf(false) }
+    var showTitle by remember { mutableStateOf(false) }
+    var showTagline by remember { mutableStateOf(false) }
+    var showBadges by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(200); showMascot = true
         delay(300); showTitle = true
         delay(200); showTagline = true
         delay(200); showBadges = true
-        delay(1800)
+        delay(2000)
+        navController?.navigate(Screen.Home.route) {
+            popUpTo(Screen.Splash.route) { inclusive = true }
+        }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
             .drawBehind() {
                 // Draw all bubbles once — static, no animation
                 bubbles.forEach { (xFrac, yFrac, radiusDp, color) ->
@@ -96,7 +108,10 @@ fun SplashScreen(navController: NavController? = null) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(modifier = Modifier.size(140.dp), contentAlignment = Alignment.Center) {
-                androidx.compose.animation.AnimatedVisibility(visible = showMascot, enter = enter) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showMascot,
+                    enter = enter
+                ) {
                     Image(
                         painter = painterResource(R.drawable.app_logo),
                         contentDescription = "Trackify mascot",
@@ -109,7 +124,10 @@ fun SplashScreen(navController: NavController? = null) {
 
             Spacer(Modifier.height(24.dp))
             Box(modifier = Modifier.height(56.dp), contentAlignment = Alignment.Center) {
-                androidx.compose.animation.AnimatedVisibility(visible = showTitle, enter = enter) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showTitle,
+                    enter = enter
+                ) {
                     Text(
                         text = "Trackify",
                         fontSize = 44.sp,
@@ -135,10 +153,14 @@ fun SplashScreen(navController: NavController? = null) {
             Spacer(Modifier.height(32.dp))
             Box(
                 modifier = Modifier
-                    .width(250.dp).height(40.dp),
+                    .width(250.dp)
+                    .height(40.dp),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.animation.AnimatedVisibility(visible = showBadges, enter = enter) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showBadges,
+                    enter = enter
+                ) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Badge("Habits", BadgePinkBg, BadgePinkTx)
                         Badge("Tasks", BadgeBlueBg, BadgeBlueTx)
@@ -165,4 +187,8 @@ fun Badge(label: String, bg: Color, textColor: Color) {
 
 @Preview
 @Composable
-fun SplashScreenPreview() = SplashScreen()
+fun SplashScreenPreview() {
+    SmartTaskTrackerTheme() {
+        SplashScreen()
+    }
+}
