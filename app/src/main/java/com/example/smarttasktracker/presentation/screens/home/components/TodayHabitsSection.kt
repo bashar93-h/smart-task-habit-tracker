@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,17 +32,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.HabitItem
 import com.example.smarttasktracker.presentation.mock.mockHabits
+import com.example.smarttasktracker.presentation.navigation.Screen
 import com.example.smarttasktracker.presentation.theme.Primary
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Repeat
 
-@Preview
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TodayHabitsSection(modifier: Modifier = Modifier) {
+fun TodayHabitsSection(modifier: Modifier = Modifier, navController: NavController?) {
 
     val habits = mockHabits.toMutableList()
     val doneCount = habits.count { it.isDone }
@@ -54,7 +56,7 @@ fun TodayHabitsSection(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
@@ -78,7 +80,7 @@ fun TodayHabitsSection(modifier: Modifier = Modifier) {
                     )
                 }
                 TextButton(
-                    onClick = {},
+                    onClick = { navController?.navigate(Screen.Habits.route) },
                     contentPadding = PaddingValues(0.dp),
                 ) {
                     Text(
@@ -94,12 +96,26 @@ fun TodayHabitsSection(modifier: Modifier = Modifier) {
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(8.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 120.dp),
+
+//            LazyVerticalGrid(
+//                columns = GridCells.Adaptive(minSize = 120.dp),
+//                horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                verticalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//                itemsIndexed(habits) { index, habit ->
+//                    HabitChip(
+//                        habit = habit,
+//                        onToggle = {
+//                            habits[index] = habit.copy(isDone = !habit.isDone)
+//                        }
+//                    )
+//                }
+//            }
+            FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(habits) { index, habit ->
+                habits.forEachIndexed { index, habit ->
                     HabitChip(
                         habit = habit,
                         onToggle = {
@@ -163,6 +179,6 @@ fun HabitChip(
 @Composable
 fun TodayHabitsSectionPreview() {
     SmartTaskTrackerTheme() {
-        TodayHabitsSection()
+        TodayHabitsSection(navController = null)
     }
 }

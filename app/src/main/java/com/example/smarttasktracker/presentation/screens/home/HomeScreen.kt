@@ -1,10 +1,9 @@
 package com.example.smarttasktracker.presentation.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -12,15 +11,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppDrawer
-import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.mock.staticQuote
+import com.example.smarttasktracker.presentation.screens.home.components.ExpandableFab
+import com.example.smarttasktracker.presentation.screens.home.components.HomeTopBar
+import com.example.smarttasktracker.presentation.screens.home.components.MotivationBottomSheet
 import com.example.smarttasktracker.presentation.screens.home.components.QuoteCard
 import com.example.smarttasktracker.presentation.screens.home.components.TodayActivitySection
 import com.example.smarttasktracker.presentation.screens.home.components.TodayHabitsSection
@@ -30,7 +35,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(navController: NavController?) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    var showMotivationSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    if (showMotivationSheet) {
+        MotivationBottomSheet(onDismiss = { showMotivationSheet = false }, onSaveToFavorites = {})
+    }
+
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         AppDrawer(onNavigate = { route ->
             navController?.navigate(route)
@@ -38,40 +49,47 @@ fun HomeScreen(navController: NavController?) {
         }, onClose = {})
     }) {
         Scaffold(topBar = {
-            AppTopBar(
+            HomeTopBar(
                 "Smart Tracker",
                 onMenuClick = { scope.launch { drawerState.open() } },
-                onQuoteClick = {})
-        }, bottomBar = { AppBottomBar(navController) }) { innerPadding ->
+                onQuoteClick = { showMotivationSheet = true })
+        }, bottomBar = { AppBottomBar(navController) }, floatingActionButton = {
+            ExpandableFab(onAddHabit = {}, onAddTask = {})
+        }) { innerPadding ->
             Surface(
-                modifier = Modifier
-                    .padding(innerPadding),
+                modifier = Modifier.padding(innerPadding),
                 color = MaterialTheme.colorScheme.background
             ) {
-                MainContent()
+                MainContent(navController)
             }
         }
     }
 }
 
 @Composable
-fun MainContent() {
-    Column(
+fun MainContent(navController: NavController?) {
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        QuoteCard(staticQuote)
-        TodayActivitySection()
-        TodayHabitsSection()
+        item {
+            QuoteCard(staticQuote)
+        }
+        item {
+            TodayActivitySection(navController = navController)
+        }
+        item {
+            TodayHabitsSection(navController = navController)
+        }
     }
 }
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    SmartTaskTrackerTheme() {
+    SmartTaskTrackerTheme{
         HomeScreen(null)
     }
 }
