@@ -26,7 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.smarttasktracker.presentation.mock.mockTasks
+import com.example.smarttasktracker.presentation.navigation.Screen
 import com.example.smarttasktracker.presentation.theme.BadgeBlueBg
 import com.example.smarttasktracker.presentation.theme.BadgeBlueTx
 import com.example.smarttasktracker.presentation.theme.BadgeGreenBg
@@ -40,7 +42,7 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.CheckSquare
 
 @Composable
-fun TodayActivitySection(modifier: Modifier = Modifier) {
+fun TodayActivitySection(modifier: Modifier = Modifier, navController: NavController?) {
     val tasks = mockTasks
     val completedCount = tasks.count { it.isCompleted }
     val totalCount = tasks.size
@@ -53,7 +55,7 @@ fun TodayActivitySection(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
@@ -77,7 +79,7 @@ fun TodayActivitySection(modifier: Modifier = Modifier) {
                     )
                 }
                 TextButton(
-                    onClick = {},
+                    onClick = { navController?.navigate(Screen.Tasks.route) },
                     contentPadding = PaddingValues(0.dp),
                 ) {
                     Text(
@@ -167,4 +169,4 @@ fun StatChip(label: String, value: String, color: Color, bg: Color, modifier: Mo
 
 @Preview
 @Composable
-fun TodayActivitySectionPreview() = TodayActivitySection()
+fun TodayActivitySectionPreview() = TodayActivitySection(navController = null)
