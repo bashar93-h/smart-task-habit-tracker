@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -32,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.smarttasktracker.presentation.navigation.BottomNavItem
 import com.example.smarttasktracker.presentation.navigation.Screen
 import com.example.smarttasktracker.presentation.theme.Primary
+import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import com.example.smarttasktracker.presentation.theme.TextPrimary
 import com.example.smarttasktracker.presentation.theme.TextSecondary
 import com.example.smarttasktracker.presentation.theme.TopBarBg
@@ -139,5 +141,13 @@ fun AppBottomBar(navController: NavController?) {
                 modifier = Modifier.padding(0.dp)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun AppBottomBarPreview() {
+    SmartTaskTrackerTheme() {
+        AppBottomBar(null)
     }
 }

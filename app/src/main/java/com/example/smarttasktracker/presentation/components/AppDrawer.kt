@@ -227,7 +227,7 @@ fun DrawerSectionLabel(label: String) {
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
         letterSpacing = 1.5.sp,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp),
     )
 }
 
