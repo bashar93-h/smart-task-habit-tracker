@@ -2,22 +2,22 @@ package com.example.smarttasktracker.domain.model
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import java.time.LocalDate
 
 
 data class TaskItem(
     val id: Int,
     val title: String,
+    val description: String = "",
     val time: String,
     val category: String,
     val isCompleted: Boolean,
-    val priority: Priority
+    val priority: Priority,
+    val date: LocalDate,
+    val notes: String = "",
+    val reminder: String = "None"
 )
 
+enum class TaskFilter { ALL, TODAY, UPCOMING, COMPLETED }
 enum class Priority { HIGH, MEDIUM, LOW }
 
-@Composable
-fun Priority.color() = when (this) {
-    Priority.HIGH   -> Color(0xFFEF5350)
-    Priority.MEDIUM -> Color(0xFFFF9800)
-    Priority.LOW    -> Color(0xFF66BB6A)
-}
