@@ -17,6 +17,9 @@ val Primary = Color(0xFFE8709A)
 val PrimaryDark = Color(0xFFD0568A)
 val PrimaryLight = Color(0xFFFDE8F5)
 
+val PrimaryContainer = Color(0xFFFFD6E7)
+val OnPrimaryContainer = Color(0xFF4A0028)
+
 // Background & Surface
 val Background = Color(0xFFFFF5F8)
 val Surface = Color(0xFFFFFFFF)
