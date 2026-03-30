@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = Primary,
     onPrimary = TextOnPrimary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
     background = Background,
     onBackground = TextPrimary,
     surface = Surface,
@@ -21,11 +23,14 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = TextOnPrimary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
     background = Background,
     onBackground = TextPrimary,
     surface = Surface,
     onSurface = TextPrimary,
 )
+
 @Composable
 fun SmartTaskTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
