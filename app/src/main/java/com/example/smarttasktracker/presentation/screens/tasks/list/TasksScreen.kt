@@ -24,6 +24,7 @@ import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.navigation.Screen
+import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.screens.tasks.list.components.GroupedTaskList
 import com.example.smarttasktracker.presentation.screens.tasks.list.components.TaskFilterTabs
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
@@ -32,7 +33,13 @@ import compose.icons.feathericons.Plus
 import java.time.LocalDate
 
 @Composable
-fun TasksScreen(tasks: SnapshotStateList<TaskItem>, navController: NavController?, modifier: Modifier = Modifier) {
+fun TasksScreen(
+    tasks: SnapshotStateList<TaskItem>,
+    navController: NavController?,
+    modifier: Modifier = Modifier
+) {
+
+    var showAddSheet by remember { mutableStateOf(false) }
 
     var selectedFilter by remember { mutableStateOf(TaskFilter.ALL) }
 
@@ -55,11 +62,22 @@ fun TasksScreen(tasks: SnapshotStateList<TaskItem>, navController: NavController
             TaskFilter.COMPLETED to tasks.count { it.isCompleted }
         )
     }
+
+    if (showAddSheet) {
+        AddEditTaskSheet(
+            taskToEdit = null,
+            onDismiss = { showAddSheet = false },
+            onSave = { newTask ->
+                tasks.add(newTask)
+                showAddSheet = false
+            })
+    }
+
     Scaffold(topBar = {
         AppTopBar("Tasks")
     }, bottomBar = { AppBottomBar(navController) }, floatingActionButton = {
         FloatingActionButton(
-            onClick = { },
+            onClick = { showAddSheet = true },
             modifier = Modifier
                 .padding(16.dp),
             containerColor = MaterialTheme.colorScheme.primary,
@@ -71,7 +89,7 @@ fun TasksScreen(tasks: SnapshotStateList<TaskItem>, navController: NavController
         }
     }) { innerPadding ->
         Surface(
-            modifier = Modifier.padding(innerPadding),
+            modifier = modifier.padding(innerPadding),
             color = MaterialTheme.colorScheme.background
         ) {
             Column(
