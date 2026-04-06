@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.mock.mockTasks
+import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.screens.tasks.details.components.DetailInfoRow
 import com.example.smarttasktracker.presentation.screens.tasks.components.DeleteTaskDialog
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
@@ -60,16 +61,28 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TaskDetailsScreen(
     task: TaskItem,
-    onEdit: () -> Unit,
+    onEdit: (TaskItem) -> Unit,
     onDelete: () -> Unit,
     onCheckedChange: (Boolean) -> Unit,
     navController: NavController?
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    var showEditSheet by remember { mutableStateOf(false) }
+
+    if (showEditSheet) {
+        AddEditTaskSheet(
+            taskToEdit = task,
+            onDismiss = { showEditSheet = false },
+            onSave = { updatedTask ->
+                onEdit(updatedTask)
+                showEditSheet = false
+            })
+    }
+
     Scaffold(topBar = {
         AppTopBar("Task Details", onBackClick = { navController?.popBackStack() }, actions = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = { showEditSheet = true }) {
                 Icon(
                     imageVector = FeatherIcons.Edit2,
                     contentDescription = "Edit",
@@ -287,7 +300,7 @@ fun TaskDetailsScreen(
 @Preview
 @Composable
 fun TaskDetailsScreenPreview() {
-    SmartTaskTrackerTheme() {
+    SmartTaskTrackerTheme {
         TaskDetailsScreen(
             task = mockTasks[9],
             onEdit = {},
