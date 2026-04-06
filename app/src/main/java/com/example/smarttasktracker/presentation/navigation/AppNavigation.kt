@@ -11,11 +11,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.smarttasktracker.presentation.mock.mockHabits
 import com.example.smarttasktracker.presentation.mock.mockTasks
 import com.example.smarttasktracker.presentation.screens.about.AboutScreen
 import com.example.smarttasktracker.presentation.screens.addEditTask.AddEditTaskScreen
 import com.example.smarttasktracker.presentation.screens.addHabit.AddHabitScreen
-import com.example.smarttasktracker.presentation.screens.habits.HabitsScreen
+import com.example.smarttasktracker.presentation.screens.habits.lists.HabitsScreen
 import com.example.smarttasktracker.presentation.screens.home.HomeScreen
 import com.example.smarttasktracker.presentation.screens.motivation.MotivationScreen
 import com.example.smarttasktracker.presentation.screens.notification.NotificationScreen
@@ -30,13 +31,15 @@ import com.example.smarttasktracker.presentation.screens.tasks.list.TasksScreen
 fun AppNavigation() {
     val navController = rememberNavController()
     val tasks = remember { mockTasks.toMutableStateList() }
+    val habits = remember { mockHabits.toMutableStateList() }
+
 
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route, exitTransition = { fadeOut(animationSpec = tween(500)) }) {
             SplashScreen(navController)
         }
         composable(Screen.Home.route, enterTransition = { fadeIn(animationSpec = tween(500)) }) {
-            HomeScreen(navController)
+            HomeScreen(tasks, habits, navController)
         }
         composable(Screen.Tasks.route) {
             TasksScreen(tasks, navController)
@@ -53,7 +56,10 @@ fun AppNavigation() {
             val task = tasks.find { it.id == taskId } ?: return@composable
             TaskDetailsScreen(
                 task = task,
-                onEdit = {},
+                onEdit = { updatedTask ->
+                    val index = tasks.indexOfFirst { it.id == updatedTask.id }
+                    tasks[index] = updatedTask
+                },
                 onDelete = {
                     tasks.removeAll { it.id == taskId }
                     navController.popBackStack()
@@ -70,7 +76,7 @@ fun AppNavigation() {
             AddEditTaskScreen(navController)
         }
         composable(Screen.Habits.route) {
-            HabitsScreen(navController)
+            HabitsScreen(habits, navController)
         }
         composable(Screen.AddHabit.route) {
             AddHabitScreen(navController)
