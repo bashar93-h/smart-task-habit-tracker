@@ -252,8 +252,7 @@ fun AddEditHabitSheet(
                         }
                         onSave(
                             HabitItem(
-                                id = habitToEdit?.id ?: ((mockHabits.maxOfOrNull { it.id }
-                                    ?: 0) + 1),
+                                id = habitToEdit?.id ?: java.util.UUID.randomUUID().hashCode(),
                                 title = title.trim(),
                                 category = selectedCategory,
                                 icon = selectedIcon,

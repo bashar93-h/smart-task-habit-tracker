@@ -230,8 +230,7 @@ fun AddEditTaskSheet(
                             titleError = true
                             return@Button
                         }
-                        onSave(TaskItem(id = taskToEdit?.id ?: ((mockTasks.maxOfOrNull { it.id }
-                            ?: 0) + 1),
+                        onSave(TaskItem(id = taskToEdit?.id ?: java.util.UUID.randomUUID().hashCode(),
                             title = title.trim(),
                             description = description.trim(),
                             time = selectedTime,
