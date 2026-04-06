@@ -16,7 +16,7 @@ import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 fun SavedQuotesScreen(navController: NavController?) {
     Scaffold(topBar = {
         AppTopBar("Saved Quotes", onBackClick = { navController?.popBackStack() })
-    }, bottomBar = { AppBottomBar(navController) }) { innerPadding ->
+    }, bottomBar = { }) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) { }
     }
 }

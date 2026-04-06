@@ -15,7 +15,7 @@ import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 fun AboutScreen(navController: NavController?) {
     Scaffold(topBar = {
         AppTopBar("About", onBackClick = { navController?.popBackStack() })
-    }, bottomBar = { AppBottomBar(navController) }) { innerPadding ->
+    }, bottomBar = {}) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) { }
     }
 }
