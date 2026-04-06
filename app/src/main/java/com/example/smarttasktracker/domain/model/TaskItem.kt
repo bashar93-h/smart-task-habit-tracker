@@ -1,7 +1,5 @@
 package com.example.smarttasktracker.domain.model
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import java.time.LocalDate
 
 
