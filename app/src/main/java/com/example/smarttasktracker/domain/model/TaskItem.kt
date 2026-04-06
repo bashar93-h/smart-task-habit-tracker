@@ -1,7 +1,5 @@
 package com.example.smarttasktracker.domain.model
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import java.time.LocalDate
 
 
@@ -19,5 +17,5 @@ data class TaskItem(
 )
 
 enum class TaskFilter { ALL, TODAY, UPCOMING, COMPLETED }
-enum class Priority { HIGH, MEDIUM, LOW }
+enum class Priority { LOW, MEDIUM, HIGH }
 
