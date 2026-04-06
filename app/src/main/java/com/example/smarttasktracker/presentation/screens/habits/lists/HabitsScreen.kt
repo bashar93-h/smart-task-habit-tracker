@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.presentation.screens.habits
+package com.example.smarttasktracker.presentation.screens.habits.lists
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,33 +19,55 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.smarttasktracker.domain.model.TaskItem
+import com.example.smarttasktracker.domain.model.HabitItem
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppTopBar
-import com.example.smarttasktracker.presentation.mock.mockHabits
-import com.example.smarttasktracker.presentation.screens.habits.components.HabitCard
-import com.example.smarttasktracker.presentation.screens.habits.components.HabitSummaryBar
-import com.example.smarttasktracker.presentation.screens.habits.components.WeeklyStrip
+import com.example.smarttasktracker.presentation.screens.habits.addEdit.AddEditHabitSheet
+import com.example.smarttasktracker.presentation.screens.habits.lists.components.HabitCard
+import com.example.smarttasktracker.presentation.screens.habits.lists.components.HabitSummaryBar
+import com.example.smarttasktracker.presentation.screens.habits.lists.components.WeeklyStrip
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Plus
 import java.time.LocalDate
 
 @Composable
-fun HabitsScreen(navController: NavController?) {
+fun HabitsScreen(habits: SnapshotStateList<HabitItem>, navController: NavController?) {
+
+    var showAddSheet by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    val habits = remember { mockHabits.toMutableStateList() }
+    var habitToEdit by remember { mutableStateOf<HabitItem?>(null) }
+
+    if (showAddSheet) {
+        AddEditHabitSheet(
+            habitToEdit = null,
+            onDismiss = { showAddSheet = false },
+            onSave = { newHabit ->
+                habits.add(newHabit)
+                showAddSheet = false
+            })
+    }
+
+    if (habitToEdit != null) {
+        AddEditHabitSheet(
+            habitToEdit = habitToEdit,
+            onDismiss = { habitToEdit = null },
+            onSave = { newHabit ->
+                val index = habits.indexOfFirst { it.id == newHabit.id }
+                habits[index] = newHabit
+                habitToEdit = null
+            })
+    }
 
     Scaffold(topBar = {
         AppTopBar("Habits")
     }, bottomBar = { AppBottomBar(navController) }, floatingActionButton = {
         FloatingActionButton(
-            onClick = { },
+            onClick = { showAddSheet = true },
             modifier = Modifier.padding(16.dp),
             containerColor = MaterialTheme.colorScheme.primary,
         ) {
@@ -93,7 +115,9 @@ fun HabitsScreen(navController: NavController?) {
                                 habits[index] = habit.copy(
                                     currentCount = habit.currentCount + 1
                                 )
-                        }
+                        },
+                        onEdit = { habitToEdit = habit },
+                        onDelete = { habits.removeAt(index) }
                     )
                 }
             }
@@ -105,6 +129,6 @@ fun HabitsScreen(navController: NavController?) {
 @Composable
 fun HabitsScreenPreview() {
     SmartTaskTrackerTheme {
-        HabitsScreen(null)
+//        HabitsScreen()
     }
 }

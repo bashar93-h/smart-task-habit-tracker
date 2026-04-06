@@ -16,30 +16,62 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.smarttasktracker.domain.model.HabitItem
+import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppDrawer
 import com.example.smarttasktracker.presentation.mock.staticQuote
+import com.example.smarttasktracker.presentation.screens.habits.addEdit.AddEditHabitSheet
 import com.example.smarttasktracker.presentation.screens.home.components.ExpandableFab
 import com.example.smarttasktracker.presentation.screens.home.components.HomeTopBar
 import com.example.smarttasktracker.presentation.screens.home.components.MotivationBottomSheet
 import com.example.smarttasktracker.presentation.screens.home.components.QuoteCard
 import com.example.smarttasktracker.presentation.screens.home.components.TodayActivitySection
 import com.example.smarttasktracker.presentation.screens.home.components.TodayHabitsSection
+import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(navController: NavController?) {
+fun HomeScreen(
+    tasks: SnapshotStateList<TaskItem>,
+    habits: SnapshotStateList<HabitItem>,
+    navController: NavController?
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var showMotivationSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
+    var showAddHabitSheet by remember { mutableStateOf(false) }
+    var showAddTaskSheet by remember { mutableStateOf(false) }
+
     if (showMotivationSheet) {
         MotivationBottomSheet(onDismiss = { showMotivationSheet = false }, onSaveToFavorites = {})
+    }
+
+    if (showAddTaskSheet) {
+        AddEditTaskSheet(
+            taskToEdit = null,
+            onDismiss = { showAddTaskSheet = false },
+            onSave = { newTask ->
+                tasks.add(newTask)
+                showAddTaskSheet = false
+            })
+    }
+
+    if (showAddHabitSheet) {
+        AddEditHabitSheet(
+            habitToEdit = null,
+            onDismiss = { showAddHabitSheet = false },
+            onSave = { newHabit ->
+                habits.add(newHabit)
+                showAddHabitSheet = false
+            })
     }
 
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
@@ -54,7 +86,9 @@ fun HomeScreen(navController: NavController?) {
                 onMenuClick = { scope.launch { drawerState.open() } },
                 onQuoteClick = { showMotivationSheet = true })
         }, bottomBar = { AppBottomBar(navController) }, floatingActionButton = {
-            ExpandableFab(onAddHabit = {}, onAddTask = {})
+            ExpandableFab(
+                onAddHabit = { showAddHabitSheet = true },
+                onAddTask = { showAddTaskSheet = true })
         }) { innerPadding ->
             Surface(
                 modifier = Modifier.padding(innerPadding),
@@ -89,7 +123,7 @@ fun MainContent(navController: NavController?) {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    SmartTaskTrackerTheme{
-        HomeScreen(null)
+    SmartTaskTrackerTheme {
+//        HomeScreen(null)
     }
 }
