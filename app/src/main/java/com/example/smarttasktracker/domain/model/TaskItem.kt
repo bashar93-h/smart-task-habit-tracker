@@ -19,5 +19,5 @@ data class TaskItem(
 )
 
 enum class TaskFilter { ALL, TODAY, UPCOMING, COMPLETED }
-enum class Priority { HIGH, MEDIUM, LOW }
+enum class Priority { LOW, MEDIUM, HIGH }
 

@@ -14,6 +14,7 @@ data class HabitItem(
     val unit: String = "",
     val isDone: Boolean = false,
     val streak: Int = 0,
+    val reminderTime: String = "No Reminder",
     val weeklyDone: List<Boolean> = List(7) { false }
 )
 
