@@ -49,7 +49,6 @@ fun DeleteTaskDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
                 textAlign = TextAlign.Center
             )
 
-            // 👇 move buttons here inside text slot
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
