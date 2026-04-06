@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.presentation.screens.habits.components
+package com.example.smarttasktracker.presentation.screens.habits.lists.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
