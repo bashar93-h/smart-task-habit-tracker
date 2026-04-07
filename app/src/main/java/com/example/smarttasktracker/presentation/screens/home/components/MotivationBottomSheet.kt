@@ -55,11 +55,11 @@ fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) 
 
     val quotes = remember {
         listOf(
-            Quote("The secret of getting ahead is getting started.", "Mark Twain"),
-            Quote("It always seems impossible until it's done.", "Nelson Mandela"),
-            Quote("Don't watch the clock; do what it does. Keep going.", "Sam Levenson"),
-            Quote("The harder I work, the luckier I get.", "Samuel Goldwyn"),
-            Quote("Success is not final, failure is not fatal.", "Winston Churchill"),
+            Quote(1, "The secret of getting ahead is getting started.", "Mark Twain"),
+            Quote(2, "It always seems impossible until it's done.", "Nelson Mandela"),
+            Quote(3, "Don't watch the clock; do what it does. Keep going.", "Sam Levenson"),
+            Quote(4, "The harder I work, the luckier I get.", "Samuel Goldwyn"),
+            Quote(5, "Success is not final, failure is not fatal.", "Winston Churchill"),
         )
     }
 
