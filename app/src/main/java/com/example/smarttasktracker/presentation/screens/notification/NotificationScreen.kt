@@ -15,8 +15,8 @@ import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 @Composable
 fun NotificationScreen(navController: NavController?) {
     Scaffold(topBar = {
-        AppTopBar("Notification", onBackClick = {navController?.popBackStack()})
-    }, bottomBar = { AppBottomBar(navController) }) { innerPadding ->
+        AppTopBar("Notification", onBackClick = { navController?.popBackStack() })
+    }, bottomBar = {}) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) { }
     }
 }

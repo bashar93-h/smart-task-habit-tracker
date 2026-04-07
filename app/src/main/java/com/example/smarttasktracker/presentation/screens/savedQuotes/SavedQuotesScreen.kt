@@ -35,10 +35,6 @@ fun SavedQuotesScreen(navController: NavController?) {
 
     Scaffold(topBar = {
         AppTopBar("Saved Quotes", onBackClick = { navController?.popBackStack() })
-<<<<<<< Updated upstream
-    }, bottomBar = { AppBottomBar(navController) }) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) { }
-=======
     }, bottomBar = { }) { innerPadding ->
         Surface(
             modifier = Modifier.padding(innerPadding),
@@ -83,7 +79,6 @@ fun SavedQuotesScreen(navController: NavController?) {
             }
 
         }
->>>>>>> Stashed changes
     }
 }
 
