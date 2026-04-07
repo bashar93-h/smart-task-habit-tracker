@@ -33,7 +33,6 @@ fun AppNavigation() {
     val tasks = remember { mockTasks.toMutableStateList() }
     val habits = remember { mockHabits.toMutableStateList() }
 
-
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route, exitTransition = { fadeOut(animationSpec = tween(500)) }) {
             SplashScreen(navController)
