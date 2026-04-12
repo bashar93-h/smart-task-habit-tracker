@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,10 +39,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.mock.mockTasks
+import com.example.smarttasktracker.presentation.screens.tasks.TasksViewModel
 import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.screens.tasks.details.components.DetailInfoRow
 import com.example.smarttasktracker.presentation.screens.tasks.components.DeleteTaskDialog
@@ -60,36 +65,38 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun TaskDetailsScreen(
-    task: TaskItem,
-    onEdit: (TaskItem) -> Unit,
-    onDelete: () -> Unit,
-    onCheckedChange: (Boolean) -> Unit,
-    navController: NavController?
+    taskId: Int,
+    navController: NavController?,
+    viewModel: TasksViewModel = hiltViewModel()
 ) {
-    var showDeleteDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(taskId) {
+        viewModel.getTaskById(taskId)
+    }
+    val task by viewModel.selectedTask.collectAsState()
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditSheet by remember { mutableStateOf(false) }
 
-    if (showEditSheet) {
+    if (showEditSheet && task != null) {
         AddEditTaskSheet(
             taskToEdit = task,
             onDismiss = { showEditSheet = false },
             onSave = { updatedTask ->
-                onEdit(updatedTask)
+                viewModel.updateTask(updatedTask)
                 showEditSheet = false
             })
     }
 
     Scaffold(topBar = {
         AppTopBar("Task Details", onBackClick = { navController?.popBackStack() }, actions = {
-            IconButton(onClick = { showEditSheet = true }) {
+            IconButton(onClick = { showEditSheet = true }, enabled = task != null) {
                 Icon(
                     imageVector = FeatherIcons.Edit2,
                     contentDescription = "Edit",
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = { showDeleteDialog = true }) {
+            IconButton(onClick = { showDeleteDialog = true }, enabled = task != null) {
                 Icon(
                     imageVector = FeatherIcons.Trash2,
                     contentDescription = "Delete",
@@ -104,10 +111,19 @@ fun TaskDetailsScreen(
                 .fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
+            if (task == null) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                val currentTask = task!!
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -124,28 +140,28 @@ fun TaskDetailsScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(task.priority.color().copy(alpha = 0.12f))
+                                    .background(currentTask.priority.color().copy(alpha = 0.12f))
                                     .padding(horizontal = 10.dp, vertical = 4.dp)
                             ) {
                                 Text(
-                                    text = task.priority.label() + " Priority",
+                                    text = currentTask.priority.label() + " Priority",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = task.priority.color(),
+                                    color = currentTask.priority.color(),
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                             Text(
-                                text = task.title,
+                                text = currentTask.title,
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface.copy(
-                                    alpha = if (task.isCompleted) 0.4f else 1f
+                                    alpha = if (currentTask.isCompleted) 0.4f else 1f
                                 ),
-                                textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null
+                                textDecoration = if (currentTask.isCompleted) TextDecoration.LineThrough else null
                             )
-                            if (task.description.isNotBlank()) {
+                            if (currentTask.description.isNotBlank()) {
                                 Text(
-                                    text = task.description,
+                                    text = currentTask.description,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                     lineHeight = 22.sp
@@ -175,7 +191,7 @@ fun TaskDetailsScreen(
                             DetailInfoRow(
                                 icon = FeatherIcons.Calendar,
                                 label = "Due Date",
-                                value = task.date.format(
+                                value = currentTask.date.format(
                                     DateTimeFormatter.ofPattern("EEEE, MMM dd yyyy")
                                 )
                             )
@@ -187,7 +203,7 @@ fun TaskDetailsScreen(
                             DetailInfoRow(
                                 icon = FeatherIcons.Clock,
                                 label = "Time",
-                                value = task.time
+                                value = currentTask.time
                             )
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.outlineVariant.copy(
@@ -197,7 +213,7 @@ fun TaskDetailsScreen(
                             DetailInfoRow(
                                 icon = FeatherIcons.Tag,
                                 label = "Category",
-                                value = task.category
+                                value = currentTask.category
                             )
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.outlineVariant.copy(
@@ -207,13 +223,13 @@ fun TaskDetailsScreen(
                             DetailInfoRow(
                                 icon = FeatherIcons.Bell,
                                 label = "Reminder",
-                                value = task.reminder
+                                value = currentTask.reminder
                             )
                         }
                     }
                 }
                 item {
-                    if (task.notes.isNotBlank()) {
+                    if (currentTask.notes.isNotBlank()) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(20.dp),
@@ -243,7 +259,7 @@ fun TaskDetailsScreen(
                                     )
                                 }
                                 Text(
-                                    text = task.notes,
+                                    text = currentTask.notes,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                     lineHeight = 22.sp
@@ -256,12 +272,14 @@ fun TaskDetailsScreen(
                 item {
                     Button(
                         onClick = {
-                            onCheckedChange(!task.isCompleted)
+                            val updatedTask =
+                                currentTask.copy(isCompleted = !currentTask.isCompleted)
+                            viewModel.updateTask(updatedTask)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (task.isCompleted) MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = if (currentTask.isCompleted) MaterialTheme.colorScheme.surfaceVariant
                             else
                                 MaterialTheme.colorScheme.primary
                         )
@@ -272,26 +290,28 @@ fun TaskDetailsScreen(
                             modifier = Modifier.padding(vertical = 4.dp)
                         ) {
                             Icon(
-                                imageVector = if (task.isCompleted) FeatherIcons.X else FeatherIcons.Check,
+                                imageVector = if (currentTask.isCompleted) FeatherIcons.X else FeatherIcons.Check,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
                             Text(
-                                text = if (task.isCompleted) "Mark as Incomplete" else "Mark as complete",
+                                text = if (currentTask.isCompleted) "Mark as Incomplete" else "Mark as complete",
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     }
                 }
+                }
             }
         }
     }
-    if (showDeleteDialog) {
+    if (showDeleteDialog && task != null) {
         DeleteTaskDialog(
             onConfirm = {
-                onDelete()
+                viewModel.deleteTask(task!!)
                 showDeleteDialog = false
+                navController?.popBackStack()
             },
             onDismiss = { showDeleteDialog = false })
     }
@@ -302,10 +322,7 @@ fun TaskDetailsScreen(
 fun TaskDetailsScreenPreview() {
     SmartTaskTrackerTheme {
         TaskDetailsScreen(
-            task = mockTasks[9],
-            onEdit = {},
-            onDelete = {},
-            onCheckedChange = {},
+            taskId = mockTasks[9].id,
             null
         )
     }

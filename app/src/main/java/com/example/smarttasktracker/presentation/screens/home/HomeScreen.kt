@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.HabitItem
 import com.example.smarttasktracker.domain.model.TaskItem
@@ -33,16 +35,18 @@ import com.example.smarttasktracker.presentation.screens.home.components.Motivat
 import com.example.smarttasktracker.presentation.screens.home.components.QuoteCard
 import com.example.smarttasktracker.presentation.screens.home.components.TodayActivitySection
 import com.example.smarttasktracker.presentation.screens.home.components.TodayHabitsSection
+import com.example.smarttasktracker.presentation.screens.tasks.TasksViewModel
 import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    tasks: SnapshotStateList<TaskItem>,
     habits: SnapshotStateList<HabitItem>,
-    navController: NavController?
+    navController: NavController?,
+    tasksViewModel: TasksViewModel = hiltViewModel()
 ) {
+    val tasks = tasksViewModel.tasks.collectAsState().value
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var showMotivationSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -59,7 +63,7 @@ fun HomeScreen(
             taskToEdit = null,
             onDismiss = { showAddTaskSheet = false },
             onSave = { newTask ->
-                tasks.add(newTask)
+                tasksViewModel.addTask(newTask)
                 showAddTaskSheet = false
             })
     }
@@ -94,14 +98,14 @@ fun HomeScreen(
                 modifier = Modifier.padding(innerPadding),
                 color = MaterialTheme.colorScheme.background
             ) {
-                MainContent(navController)
+                MainContent(tasks, navController)
             }
         }
     }
 }
 
 @Composable
-fun MainContent(navController: NavController?) {
+fun MainContent(tasks: List<TaskItem>, navController: NavController?) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -112,7 +116,7 @@ fun MainContent(navController: NavController?) {
             QuoteCard(staticQuote)
         }
         item {
-            TodayActivitySection(navController = navController)
+            TodayActivitySection(tasks = tasks, navController = navController)
         }
         item {
             TodayHabitsSection(navController = navController)

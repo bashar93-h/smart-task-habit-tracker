@@ -230,16 +230,20 @@ fun AddEditTaskSheet(
                             titleError = true
                             return@Button
                         }
-                        onSave(TaskItem(id = taskToEdit?.id ?: java.util.UUID.randomUUID().hashCode(),
-                            title = title.trim(),
-                            description = description.trim(),
-                            time = selectedTime,
-                            category = selectedCategory,
-                            isCompleted = taskToEdit?.isCompleted ?: false,
-                            priority = selectedPriority,
-                            date = selectedDate,
-                            notes = notes.trim(),
-                            reminder = selectedReminder))
+                        onSave(
+                            TaskItem(
+                                id = taskToEdit?.id ?: java.util.UUID.randomUUID().hashCode(),
+                                title = title.trim(),
+                                description = description.trim(),
+                                time = selectedTime,
+                                category = selectedCategory,
+                                isCompleted = taskToEdit?.isCompleted ?: false,
+                                priority = selectedPriority,
+                                date = selectedDate,
+                                notes = notes.trim(),
+                                reminder = selectedReminder
+                            )
+                        )
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
