@@ -162,7 +162,7 @@ fun TimePickerDialog(onTimeSelected: (String) -> Unit, onDismiss: () -> Unit) {
                     hour > 12 -> hour - 12
                     else -> hour
                 }
-                onTimeSelected("%02d:%2d %s".format(displayHour, minute, amPm))
+                onTimeSelected("%02d:%02d %s".format(displayHour, minute, amPm))
             }) {
                 Text("OK")
             }
