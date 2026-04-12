@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,26 +19,30 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.TaskFilter
 import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.navigation.Screen
+import com.example.smarttasktracker.presentation.screens.tasks.TasksViewModel
 import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.screens.tasks.list.components.GroupedTaskList
 import com.example.smarttasktracker.presentation.screens.tasks.list.components.TaskFilterTabs
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Plus
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 
 @Composable
 fun TasksScreen(
-    tasks: SnapshotStateList<TaskItem>,
     navController: NavController?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: TasksViewModel = hiltViewModel()
 ) {
+    val tasks = viewModel.tasks.collectAsState().value
 
     var showAddSheet by remember { mutableStateOf(false) }
 
@@ -68,7 +73,7 @@ fun TasksScreen(
             taskToEdit = null,
             onDismiss = { showAddSheet = false },
             onSave = { newTask ->
-                tasks.add(newTask)
+                viewModel.addTask(newTask)
                 showAddSheet = false
             })
     }
@@ -106,7 +111,8 @@ fun TasksScreen(
                     filteredTasks,
                     onCheckedChange = { id ->
                         val index = tasks.indexOfFirst { it.id == id }
-                        tasks[index] = tasks[index].copy(isCompleted = !tasks[index].isCompleted)
+                        val updatedTask = tasks[index].copy(isCompleted = !tasks[index].isCompleted)
+                        viewModel.updateTask(updatedTask)
                     },
                     onTaskClick = { id ->
                         navController?.navigate(
@@ -115,7 +121,11 @@ fun TasksScreen(
                             )
                         )
                     },
-                    onDelete = { id -> tasks.removeAll { it.id == id } })
+                    onDelete = { id ->
+                        val index = tasks.indexOfFirst { it.id == id }
+                        val task = tasks[index]
+                        viewModel.deleteTask(task)
+                    })
             }
 
         }

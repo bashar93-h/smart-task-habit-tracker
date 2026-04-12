@@ -38,10 +38,10 @@ fun AppNavigation() {
             SplashScreen(navController)
         }
         composable(Screen.Home.route, enterTransition = { fadeIn(animationSpec = tween(500)) }) {
-            HomeScreen(tasks, habits, navController)
+            HomeScreen(habits, navController)
         }
         composable(Screen.Tasks.route) {
-            TasksScreen(tasks, navController)
+            TasksScreen(navController)
         }
         composable(
             Screen.TaskDetails.route,
@@ -52,22 +52,8 @@ fun AppNavigation() {
             enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) }) { backStackEntry ->
             val taskId = backStackEntry.arguments?.getInt("taskId") ?: return@composable
-            val task = tasks.find { it.id == taskId } ?: return@composable
             TaskDetailsScreen(
-                task = task,
-                onEdit = { updatedTask ->
-                    val index = tasks.indexOfFirst { it.id == updatedTask.id }
-                    tasks[index] = updatedTask
-                },
-                onDelete = {
-                    tasks.removeAll { it.id == taskId }
-                    navController.popBackStack()
-                },
-                onCheckedChange = { checked ->
-                    val index = tasks.indexOfFirst { it.id == taskId }
-                    tasks[index] = tasks[index].copy(isCompleted = checked)
-
-                },
+                taskId = taskId,
                 navController
             )
         }
