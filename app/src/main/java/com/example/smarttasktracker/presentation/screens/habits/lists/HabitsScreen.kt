@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,10 +23,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.HabitItem
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppTopBar
+import com.example.smarttasktracker.presentation.screens.habits.HabitsViewModel
 import com.example.smarttasktracker.presentation.screens.habits.addEdit.AddEditHabitSheet
 import com.example.smarttasktracker.presentation.screens.habits.lists.components.HabitCard
 import com.example.smarttasktracker.presentation.screens.habits.lists.components.HabitSummaryBar
@@ -36,18 +39,20 @@ import compose.icons.feathericons.Plus
 import java.time.LocalDate
 
 @Composable
-fun HabitsScreen(habits: SnapshotStateList<HabitItem>, navController: NavController?) {
+fun HabitsScreen(navController: NavController?, viewModel: HabitsViewModel = hiltViewModel()) {
 
     var showAddSheet by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var habitToEdit by remember { mutableStateOf<HabitItem?>(null) }
+
+    val habits = viewModel.habits.collectAsState().value
 
     if (showAddSheet) {
         AddEditHabitSheet(
             habitToEdit = null,
             onDismiss = { showAddSheet = false },
             onSave = { newHabit ->
-                habits.add(newHabit)
+                viewModel.addHabit(newHabit)
                 showAddSheet = false
             })
     }
@@ -57,8 +62,7 @@ fun HabitsScreen(habits: SnapshotStateList<HabitItem>, navController: NavControl
             habitToEdit = habitToEdit,
             onDismiss = { habitToEdit = null },
             onSave = { newHabit ->
-                val index = habits.indexOfFirst { it.id == newHabit.id }
-                habits[index] = newHabit
+                viewModel.updateHabit(newHabit)
                 habitToEdit = null
             })
     }
@@ -107,17 +111,23 @@ fun HabitsScreen(habits: SnapshotStateList<HabitItem>, navController: NavControl
                     HabitCard(
                         habit = habit,
                         onToggle = {
-                            if (index != -1)
-                                habits[index] = habit.copy(isDone = !habit.isDone)
+                            if (index != -1) {
+                                val updatedHabit = habit.copy(isDone = !habit.isDone)
+                                viewModel.updateHabit(updatedHabit)
+                            }
                         },
                         onIncrement = {
-                            if (index != -1 && habit.currentCount < habit.targetCount)
-                                habits[index] = habit.copy(
-                                    currentCount = habit.currentCount + 1
+                            if (index != -1 && habit.currentCount < habit.targetCount) {
+                                val newCount = habit.currentCount + 1
+                                val updatedHabit = habit.copy(
+                                    currentCount = newCount,
+                                    isDone = newCount >= habit.targetCount
                                 )
+                                viewModel.updateHabit(updatedHabit)
+                            }
                         },
                         onEdit = { habitToEdit = habit },
-                        onDelete = { habits.removeAt(index) }
+                        onDelete = { viewModel.deleteHabit(habit) }
                     )
                 }
             }
