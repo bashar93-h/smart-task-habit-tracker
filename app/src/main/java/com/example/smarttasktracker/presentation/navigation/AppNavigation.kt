@@ -30,7 +30,6 @@ import com.example.smarttasktracker.presentation.screens.tasks.list.TasksScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val tasks = remember { mockTasks.toMutableStateList() }
     val habits = remember { mockHabits.toMutableStateList() }
 
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
@@ -38,7 +37,7 @@ fun AppNavigation() {
             SplashScreen(navController)
         }
         composable(Screen.Home.route, enterTransition = { fadeIn(animationSpec = tween(500)) }) {
-            HomeScreen(habits, navController)
+            HomeScreen(navController)
         }
         composable(Screen.Tasks.route) {
             TasksScreen(navController)
@@ -61,7 +60,7 @@ fun AppNavigation() {
             AddEditTaskScreen(navController)
         }
         composable(Screen.Habits.route) {
-            HabitsScreen(habits, navController)
+            HabitsScreen(navController)
         }
         composable(Screen.AddHabit.route) {
             AddHabitScreen(navController)
