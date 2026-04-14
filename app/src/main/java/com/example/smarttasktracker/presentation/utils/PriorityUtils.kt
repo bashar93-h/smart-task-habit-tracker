@@ -6,13 +6,13 @@ import com.example.smarttasktracker.domain.model.Priority
 
 @Composable
 fun Priority.color() = when (this) {
-    Priority.HIGH   -> Color(0xFFEF5350)
+    Priority.HIGH -> Color(0xFFEF5350)
     Priority.MEDIUM -> Color(0xFFFF9800)
-    Priority.LOW    -> Color(0xFF66BB6A)
+    Priority.LOW -> Color(0xFF66BB6A)
 }
 
-fun Priority.label() = when(this) {
-    Priority.HIGH   -> "High"
+fun Priority.label() = when (this) {
+    Priority.HIGH -> "High"
     Priority.MEDIUM -> "Med"
-    Priority.LOW    -> "Low"
+    Priority.LOW -> "Low"
 }

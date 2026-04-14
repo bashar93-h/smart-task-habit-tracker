@@ -43,9 +43,12 @@ import compose.icons.feathericons.Repeat
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TodayHabitsSection(modifier: Modifier = Modifier, navController: NavController?) {
+fun TodayHabitsSection(
+    habits: List<HabitItem>,
+    modifier: Modifier = Modifier,
+    navController: NavController?
+) {
 
-    val habits = mockHabits.toMutableList()
     val doneCount = habits.count { it.isDone }
     val totalCount = habits.size
 
@@ -111,17 +114,32 @@ fun TodayHabitsSection(modifier: Modifier = Modifier, navController: NavControll
 //                    )
 //                }
 //            }
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                habits.forEachIndexed { index, habit ->
-                    HabitChip(
-                        habit = habit,
-                        onToggle = {
-                            habits[index] = habit.copy(isDone = !habit.isDone)
+//            FlowRow(
+//                horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                verticalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//                habits.forEachIndexed { index, habit ->
+//                    HabitChip(
+//                        habit = habit,
+//                        onToggle = {
+//                            TODO()
+//                        }
+//                    )
+//                }
+//            }
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                habits.chunked(2).forEach { rowItems ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        rowItems.forEach { item ->
+                            HabitChip(habit = item, onToggle = {}, modifier = Modifier.weight(1f))
                         }
-                    )
+                        if (rowItems.size == 1)
+                            Spacer(modifier = Modifier.weight(1f))
+                    }
+
                 }
             }
         }
@@ -130,9 +148,9 @@ fun TodayHabitsSection(modifier: Modifier = Modifier, navController: NavControll
 
 @Composable
 fun HabitChip(
+    modifier: Modifier = Modifier,
     habit: HabitItem = mockHabits[0],
     onToggle: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     val backgroundColor = if (habit.isDone) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
     else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
@@ -179,6 +197,6 @@ fun HabitChip(
 @Composable
 fun TodayHabitsSectionPreview() {
     SmartTaskTrackerTheme() {
-        TodayHabitsSection(navController = null)
+        TodayHabitsSection(habits = mockHabits, navController = null)
     }
 }
