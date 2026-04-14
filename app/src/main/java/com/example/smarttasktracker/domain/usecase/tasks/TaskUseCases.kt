@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetAllTasks @Inject constructor(private val tasksRepository: TasksRepository) {
-    suspend operator fun invoke(): Flow<List<TaskItem>> =
+    operator fun invoke(): Flow<List<TaskItem>> =
         tasksRepository.getAllTasks()
 }
 
