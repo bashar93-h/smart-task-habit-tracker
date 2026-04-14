@@ -262,6 +262,7 @@ fun AddEditHabitSheet(
                                 unit = unit.trim(),
                                 isDone = habitToEdit?.isDone ?: false,
                                 streak = habitToEdit?.streak ?: 0,
+                                reminderTime = reminderTime,
                                 weeklyDone = habitToEdit?.weeklyDone ?: List(7) { false },
                             )
                         )
