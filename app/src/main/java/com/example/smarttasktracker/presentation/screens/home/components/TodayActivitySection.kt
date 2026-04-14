@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.mock.mockTasks
 import com.example.smarttasktracker.presentation.navigation.Screen
 import com.example.smarttasktracker.presentation.theme.BadgeBlueBg
@@ -42,8 +43,11 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.CheckSquare
 
 @Composable
-fun TodayActivitySection(modifier: Modifier = Modifier, navController: NavController?) {
-    val tasks = mockTasks
+fun TodayActivitySection(
+    tasks: List<TaskItem>,
+    modifier: Modifier = Modifier,
+    navController: NavController?
+) {
     val completedCount = tasks.count { it.isCompleted }
     val totalCount = tasks.size
     val progress = completedCount.toFloat() / totalCount.toFloat()
@@ -169,4 +173,4 @@ fun StatChip(label: String, value: String, color: Color, bg: Color, modifier: Mo
 
 @Preview
 @Composable
-fun TodayActivitySectionPreview() = TodayActivitySection(navController = null)
+fun TodayActivitySectionPreview() = TodayActivitySection(tasks = mockTasks, navController = null)
