@@ -5,7 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.example.smarttasktracker.domain.model.HabitItem
 import com.example.smarttasktracker.domain.model.TaskItem
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -33,6 +35,54 @@ class ReminderScheduler(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        setExactAlarm(triggerTime, pendingIntent)
+    }
+
+    fun cancelTaskReminder(taskId: Int) {
+        val intent = Intent(context, TaskReminderReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            taskId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
+    }
+
+    fun scheduleHabitReminder(habit: HabitItem) {
+        scheduleHabitReminder(habit.id, habit.title, habit.reminderTime)
+    }
+
+    fun scheduleHabitReminder(habitId: Int, habitTitle: String, reminderTime: String) {
+        if (reminderTime == "No Reminder") return
+
+        val triggerTime = calculateNextHabitTriggerTime(reminderTime) ?: return
+        val intent = Intent(context, HabitReminderReceiver::class.java).apply {
+            putExtra("habit_id", habitId)
+            putExtra("habit_title", habitTitle)
+            putExtra("habit_time", reminderTime)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            habitId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        setExactAlarm(triggerTime, pendingIntent)
+    }
+
+    fun cancelHabitReminder(habitId: Int) {
+        val intent = Intent(context, HabitReminderReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            habitId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
+    }
+
+    fun setExactAlarm(triggerTime: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (alarmManager.canScheduleExactAlarms()) {
                 alarmManager.setExactAndAllowWhileIdle(
@@ -50,16 +100,6 @@ class ReminderScheduler(private val context: Context) {
         }
     }
 
-    fun cancelTaskReminder(taskId: Int) {
-        val intent = Intent(context, TaskReminderReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            taskId,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.cancel(pendingIntent)
-    }
 
     private fun calculateTriggerTime(task: TaskItem): Long? {
         val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH)
@@ -75,7 +115,7 @@ class ReminderScheduler(private val context: Context) {
                 "2 hours before" -> java.time.Duration.ofHours(2)
                 "1 day before" -> java.time.Duration.ofDays(1)
                 "At time of task" -> java.time.Duration.ZERO
-                else -> null
+                else -> return null
             }
         )
 
@@ -84,4 +124,16 @@ class ReminderScheduler(private val context: Context) {
         return reminderDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 
+    private fun calculateNextHabitTriggerTime(reminderTime: String): Long? {
+        val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH)
+        val time = LocalTime.parse(reminderTime, formatter)
+        var triggerDateTime = LocalDateTime.of(LocalDate.now(), time)
+
+        if (!triggerDateTime.isAfter(LocalDateTime.now())) {
+            triggerDateTime = triggerDateTime.plusDays(1)
+        }
+
+        return triggerDateTime.atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli()
+    }
 }

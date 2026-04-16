@@ -39,6 +39,9 @@
             android:name=".core.notification.TaskReminderReceiver"
             android:exported="false" />
         <receiver
+            android:name=".core.notification.HabitReminderReceiver"
+            android:exported="false" />
+        <receiver
             android:name=".core.notification.BootReceiver"
             android:exported="true">
             <intent-filter>
