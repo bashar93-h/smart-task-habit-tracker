@@ -1,5 +1,6 @@
 package com.example.smarttasktracker.domain.repository
 
+import com.example.smarttasktracker.core.notification.ReminderScheduler
 import com.example.smarttasktracker.data.datasources.local.dao.HabitDao
 import com.example.smarttasktracker.data.datasources.local.entity.HabitEntity
 import com.example.smarttasktracker.data.datasources.local.repository.HabitsRepositoryImpl
@@ -24,10 +25,11 @@ class HabitRepositoryImplTest() {
     private lateinit var repository: HabitsRepositoryImpl
 
     private val dao: HabitDao = mockk()
+    private val reminderScheduler: ReminderScheduler = mockk()
 
     @Before
     fun setup() {
-        repository = HabitsRepositoryImpl(dao)
+        repository = HabitsRepositoryImpl(dao, reminderScheduler)
     }
 
     @Test

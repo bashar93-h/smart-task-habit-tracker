@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smarttasktracker.domain.model.Quote
 import com.example.smarttasktracker.domain.model.SavedQuote
-import com.example.smarttasktracker.domain.usecase.quotes.GetRandomQuoteUseCase
 import com.example.smarttasktracker.domain.usecase.quotes.QuoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +28,7 @@ class QuoteViewModel @Inject constructor(private val useCases: QuoteUseCases) :
 
     fun loadQuotes() {
         viewModelScope.launch {
-            useCases.getQuotesUseCase().collect { quotesList ->
+            useCases.getQuotes().collect { quotesList ->
                 _quotes.value = quotesList
             }
         }
@@ -40,7 +39,7 @@ class QuoteViewModel @Inject constructor(private val useCases: QuoteUseCases) :
             _state.value = _state.value.copy(isLoadingQuote = true)
 
             try {
-                val quote = useCases.getRandomQuoteUseCase()
+                val quote = useCases.getRandomQuote()
                 val imageUrl = "https://picsum.photos/400/300?random=${System.currentTimeMillis()}"
                 _state.value = _state.value.copy(
                     isLoadingQuote = false,
@@ -62,19 +61,19 @@ class QuoteViewModel @Inject constructor(private val useCases: QuoteUseCases) :
 
     fun getQuoteById(id: Int) {
         viewModelScope.launch {
-            useCases.getQuoteByIdUseCase(id)
+            useCases.getQuoteById(id)
         }
     }
 
     fun addQuote(quote: Quote) {
         viewModelScope.launch {
-            useCases.insertQuoteUseCase(quote)
+            useCases.insertQuote(quote)
         }
     }
 
     fun deleteQuote(savedQuote: SavedQuote) {
         viewModelScope.launch {
-            useCases.deleteQuoteUseCase(savedQuote)
+            useCases.deleteQuote(savedQuote)
         }
     }
 }

@@ -37,7 +37,7 @@ class HabitMapperTest {
     }
 
     @Test
-    fun `toEntity should map habitEntity to habitItem correctly`() {
+    fun `toEntity should map habitItem to habitEntity correctly`() {
         val domain = HabitItem(
             id = 1,
             title = "Habit Test",
