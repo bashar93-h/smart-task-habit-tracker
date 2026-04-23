@@ -17,5 +17,6 @@ data class HabitEntity(
     val isDone: Boolean = false,
     val streak: Int = 0,
     val reminderTime: String = "No Reminder",
-    val weeklyDone: List<Boolean> = List(7) { false }
+    val weeklyDone: List<Boolean> = List(7) { false },
+    val weeklyWeekStartEpochDay: Long = 0L
 )
