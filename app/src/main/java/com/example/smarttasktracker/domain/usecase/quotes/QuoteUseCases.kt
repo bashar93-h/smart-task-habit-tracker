@@ -12,22 +12,22 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 
-class GetRandomQuoteUseCase @Inject constructor(private val quoteRepository: QuoteRepository) {
+class GetRandomQuote @Inject constructor(private val quoteRepository: QuoteRepository) {
     suspend operator fun invoke(): Quote =
         quoteRepository.getRandomQuote()
 }
 
-class GetQuotesUseCase @Inject constructor(private val quoteRepository: QuoteRepository) {
+class GetQuotes @Inject constructor(private val quoteRepository: QuoteRepository) {
     suspend operator fun invoke(): Flow<List<SavedQuote>> =
         quoteRepository.getQuotes()
 }
 
-class GetQuoteByIdUseCase @Inject constructor(private val quoteRepository: QuoteRepository) {
+class GetQuoteById @Inject constructor(private val quoteRepository: QuoteRepository) {
     suspend operator fun invoke(id: Int): SavedQuote =
         quoteRepository.getQuoteById(id)
 }
 
-class InsertQuoteUseCase @Inject constructor(private val quoteRepository: QuoteRepository) {
+class InsertQuote @Inject constructor(private val quoteRepository: QuoteRepository) {
     suspend operator fun invoke(quote: Quote) =
         quoteRepository.insertQuote(
             SavedQuote(
@@ -40,15 +40,15 @@ class InsertQuoteUseCase @Inject constructor(private val quoteRepository: QuoteR
 }
 
 
-class DeleteQuoteUseCase @Inject constructor(private val quoteRepository: QuoteRepository) {
+class DeleteQuote @Inject constructor(private val quoteRepository: QuoteRepository) {
     suspend operator fun invoke(savedQuote: SavedQuote) =
         quoteRepository.deleteQuote(savedQuote)
 }
 
 data class QuoteUseCases @Inject constructor(
-    val getRandomQuoteUseCase: GetRandomQuoteUseCase,
-    val getQuotesUseCase: GetQuotesUseCase,
-    val getQuoteByIdUseCase: GetQuoteByIdUseCase,
-    val insertQuoteUseCase: InsertQuoteUseCase,
-    val deleteQuoteUseCase: DeleteQuoteUseCase,
+    val getRandomQuote: GetRandomQuote,
+    val getQuotes: GetQuotes,
+    val getQuoteById: GetQuoteById,
+    val insertQuote: InsertQuote,
+    val deleteQuote: DeleteQuote,
 )
