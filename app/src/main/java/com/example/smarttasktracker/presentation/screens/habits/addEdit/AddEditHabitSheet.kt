@@ -264,6 +264,7 @@ fun AddEditHabitSheet(
                                 streak = habitToEdit?.streak ?: 0,
                                 reminderTime = reminderTime,
                                 weeklyDone = habitToEdit?.weeklyDone ?: List(7) { false },
+                                weeklyWeekStartEpochDay = habitToEdit?.weeklyWeekStartEpochDay ?: 0L
                             )
                         )
                     },

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,49 +24,39 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smarttasktracker.domain.model.Quote
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.QuoteViewModel
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Heart
 import compose.icons.feathericons.RefreshCw
 import compose.icons.feathericons.X
-import compose.icons.feathericons.Zap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) {
+fun MotivationBottomSheet(
+    onDismiss: () -> Unit,
+    viewModel: QuoteViewModel = hiltViewModel()
+) {
 
+    val state by viewModel.state.collectAsState()
+    val currentQuote = state.quote
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    val quotes = remember {
-        listOf(
-            Quote(1, "The secret of getting ahead is getting started.", "Mark Twain"),
-            Quote(2, "It always seems impossible until it's done.", "Nelson Mandela"),
-            Quote(3, "Don't watch the clock; do what it does. Keep going.", "Sam Levenson"),
-            Quote(4, "The harder I work, the luckier I get.", "Samuel Goldwyn"),
-            Quote(5, "Success is not final, failure is not fatal.", "Winston Churchill"),
-        )
-    }
-
-    var currentIndex by remember { mutableIntStateOf(0) }
-    val currentQuote = quotes[currentIndex]
 
 
     ModalBottomSheet(
@@ -129,23 +121,12 @@ fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) 
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = FeatherIcons.Zap,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Text(
-                        text = "Stay Inspired",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                AsyncImage(
+                    model = state.imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
             }
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -153,23 +134,60 @@ fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) 
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 elevation = CardDefaults.cardElevation(0.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Text(
-                        text = "\u201C ${currentQuote.text} \u201D",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        lineHeight = 26.sp
-                    )
-                    Text(
-                        text = "- ${currentQuote.author}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.align(Alignment.End)
-                    )
+                when {
+                    state.isLoadingQuote -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    state.quoteError.isNotEmpty() -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = state.quoteError,
+                                color = MaterialTheme.colorScheme.error
+                            )
+
+                            Text(
+                                text = "Tap to retry",
+                                modifier = Modifier
+                                    .clickable { viewModel.getRandomQuote() }
+                                    .padding(top = 8.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    currentQuote != null -> {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text(
+                                text = "\u201C ${currentQuote.text} \u201D",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                lineHeight = 26.sp
+                            )
+                            Text(
+                                text = "- ${currentQuote.author}",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                        }
+                    }
                 }
             }
             Row(
@@ -177,7 +195,9 @@ fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) 
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 OutlinedButton(
-                    onClick = { },
+                    onClick = {
+                        currentQuote?.let { viewModel.addQuote(it) }
+                    },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -194,7 +214,7 @@ fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) 
                     }
                 }
                 Button(
-                    onClick = { currentIndex = (currentIndex + 1) % quotes.size },
+                    onClick = { viewModel.getRandomQuote() },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -220,6 +240,6 @@ fun MotivationBottomSheet(onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) 
 @Composable
 fun MotivationBottomSheetPreview() {
     SmartTaskTrackerTheme() {
-        MotivationBottomSheet(onDismiss = {}, onSaveToFavorites = {})
+        MotivationBottomSheet(onDismiss = {})
     }
 }

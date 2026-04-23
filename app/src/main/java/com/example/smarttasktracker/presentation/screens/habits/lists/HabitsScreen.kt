@@ -19,13 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.domain.model.HabitItem
+import com.example.smarttasktracker.domain.utils.HabitWeeklyDone
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.screens.habits.HabitsViewModel
@@ -113,7 +113,12 @@ fun HabitsScreen(navController: NavController?, viewModel: HabitsViewModel = hil
                         onToggle = {
                             if (index != -1) {
                                 val updatedHabit = habit.copy(isDone = !habit.isDone)
-                                viewModel.updateHabit(updatedHabit)
+                                val withWeek = HabitWeeklyDone.applyForToday(
+                                    habit = updatedHabit,
+                                    doneForToday = HabitWeeklyDone.habitDoneForToday(updatedHabit),
+                                    today = LocalDate.now()
+                                )
+                                viewModel.updateHabit(withWeek)
                             }
                         },
                         onIncrement = {
@@ -123,7 +128,12 @@ fun HabitsScreen(navController: NavController?, viewModel: HabitsViewModel = hil
                                     currentCount = newCount,
                                     isDone = newCount >= habit.targetCount
                                 )
-                                viewModel.updateHabit(updatedHabit)
+                                val withWeek = HabitWeeklyDone.applyForToday(
+                                    habit = updatedHabit,
+                                    doneForToday = HabitWeeklyDone.habitDoneForToday(updatedHabit),
+                                    today = LocalDate.now()
+                                )
+                                viewModel.updateHabit(withWeek)
                             }
                         },
                         onEdit = { habitToEdit = habit },

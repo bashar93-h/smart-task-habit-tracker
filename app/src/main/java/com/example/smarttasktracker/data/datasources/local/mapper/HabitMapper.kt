@@ -17,7 +17,8 @@ fun HabitEntity.toDomain(): HabitItem {
         isDone = isDone,
         streak = streak,
         reminderTime = reminderTime,
-        weeklyDone = weeklyDone
+        weeklyDone = weeklyDone,
+        weeklyWeekStartEpochDay = weeklyWeekStartEpochDay
     )
 }
 
@@ -34,6 +35,7 @@ fun HabitItem.toEntity(): HabitEntity {
         isDone = isDone,
         streak = streak,
         reminderTime = reminderTime,
-        weeklyDone = weeklyDone
+        weeklyDone = weeklyDone,
+        weeklyWeekStartEpochDay = weeklyWeekStartEpochDay
     )
 }

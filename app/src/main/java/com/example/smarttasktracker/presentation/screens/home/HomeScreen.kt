@@ -58,7 +58,7 @@ fun HomeScreen(
     var showAddTaskSheet by remember { mutableStateOf(false) }
 
     if (showMotivationSheet) {
-        MotivationBottomSheet(onDismiss = { showMotivationSheet = false }, onSaveToFavorites = {})
+        MotivationBottomSheet(onDismiss = { showMotivationSheet = false })
     }
 
     if (showAddTaskSheet) {
@@ -116,7 +116,7 @@ fun MainContent(tasks: List<TaskItem>, habits: List<HabitItem>, navController: N
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            QuoteCard(staticQuote)
+            QuoteCard()
         }
         item {
             TodayActivitySection(tasks = tasks, navController = navController)
