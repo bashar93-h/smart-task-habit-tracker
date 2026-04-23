@@ -3,8 +3,10 @@ package com.example.smarttasktracker.di
 import android.content.Context
 import androidx.room.Room
 import com.example.smarttasktracker.data.datasources.local.dao.HabitDao
+import com.example.smarttasktracker.data.datasources.local.dao.QuoteDao
 import com.example.smarttasktracker.data.datasources.local.dao.TaskDao
 import com.example.smarttasktracker.data.datasources.local.database.AppDatabase
+import com.example.smarttasktracker.data.datasources.local.database.MIGRATION_2_3
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +22,9 @@ class DatabaseModule {
     @Singleton
     fun provideTasksDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "app_db")
-            .fallbackToDestructiveMigration(false).build()
+            .addMigrations(MIGRATION_2_3)
+            .fallbackToDestructiveMigration(false)
+            .build()
 
     @Provides
     @Singleton
@@ -31,4 +35,9 @@ class DatabaseModule {
     @Singleton
     fun provideHabitsDao(appDatabase: AppDatabase): HabitDao =
         appDatabase.habitDao()
+
+    @Provides
+    @Singleton
+    fun provideQuoteDao(appDatabase: AppDatabase): QuoteDao =
+        appDatabase.quoteDao()
 }

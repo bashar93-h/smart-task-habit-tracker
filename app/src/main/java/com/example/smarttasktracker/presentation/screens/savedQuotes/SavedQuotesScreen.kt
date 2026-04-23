@@ -15,22 +15,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.mock.mockSavedQuotes
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.QuoteViewModel
 import com.example.smarttasktracker.presentation.screens.savedQuotes.components.EmptyQuoteState
 import com.example.smarttasktracker.presentation.screens.savedQuotes.components.SavedQuoteCard
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 
 @Composable
-fun SavedQuotesScreen(navController: NavController?) {
-    val quotes = remember { mockSavedQuotes.toMutableStateList() }
+fun SavedQuotesScreen(navController: NavController?, viewModel: QuoteViewModel = hiltViewModel()) {
+    val quotes = viewModel.quotes.collectAsState().value
     val context = LocalContext.current
 
     Scaffold(topBar = {
@@ -63,7 +66,7 @@ fun SavedQuotesScreen(navController: NavController?) {
                     items(items = quotes, key = { it.id }) { quote ->
                         SavedQuoteCard(
                             quote = quote,
-                            onUnsave = { quotes.removeAll { it.id == quote.id } },
+                            onUnsave = { viewModel.deleteQuote(quote) },
                             onCopy = {
                                 val clipboard =
                                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
