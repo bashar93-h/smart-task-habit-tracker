@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.presentation.components.AppTopBar
 import com.example.smarttasktracker.presentation.mock.mockSavedQuotes
-import com.example.smarttasktracker.presentation.screens.home.viewmodel.QuoteViewModel
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteViewModel
 import com.example.smarttasktracker.presentation.screens.savedQuotes.components.EmptyQuoteState
 import com.example.smarttasktracker.presentation.screens.savedQuotes.components.SavedQuoteCard
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme

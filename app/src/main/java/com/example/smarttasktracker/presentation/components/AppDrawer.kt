@@ -1,6 +1,8 @@
 package com.example.smarttasktracker.presentation.components
 
-import androidx.compose.material3.AlertDialog
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,11 +37,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.smarttasktracker.presentation.navigation.Screen
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.userPrefs.UserPreferencesViewModel
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.BarChart2
@@ -51,17 +60,35 @@ import compose.icons.feathericons.Settings
 import compose.icons.feathericons.User
 
 @Composable
-fun AppDrawer(onNavigate: (String) -> Unit, onClose: () -> Unit, modifier: Modifier = Modifier) {
+fun AppDrawer(
+    onNavigate: (String) -> Unit,
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: UserPreferencesViewModel = hiltViewModel(),
+) {
 
-    var userName by remember { mutableStateOf("Guest") }
+    val context = LocalContext.current
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult( // launcher to open another system UI
+            contract = ActivityResultContracts.OpenDocument()
+        ) { uri ->
+            uri?.let {
+                viewModel.updateProfileImage(it.toString())
+                // setting permanent access to the selected file
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION // read only access enough for images
+                )
+            }
+        }
+    val preference by viewModel.preferences.collectAsStateWithLifecycle()
     var showNameDialog by remember { mutableStateOf(false) }
-    var isDarkMode by remember { mutableStateOf(false) }
 
     if (showNameDialog) {
         EditNameDialog(
-            currentName = userName,
+            currentName = preference.userName,
             onConfirm = { newName ->
-                userName = newName
+                viewModel.updateUserName(newName)
                 showNameDialog = false
             },
             onDismiss = { showNameDialog = false })
@@ -87,15 +114,26 @@ fun AppDrawer(onNavigate: (String) -> Unit, onClose: () -> Unit, modifier: Modif
                         modifier = Modifier
                             .size(64.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f)),
+                            .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f))
+                            // Only show images to the user : image/png or /jpeg or /webp
+                            .clickable { imagePickerLauncher.launch(arrayOf("image/*")) },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = FeatherIcons.User,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        if (preference.profileImageUri.isNotEmpty()) {
+                            AsyncImage(
+                                model = preference.profileImageUri,
+                                contentDescription = "Profile",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(
+                                imageVector = FeatherIcons.User,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
@@ -103,7 +141,7 @@ fun AppDrawer(onNavigate: (String) -> Unit, onClose: () -> Unit, modifier: Modif
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
-                            text = userName,
+                            text = preference.userName,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold
@@ -174,8 +212,8 @@ fun AppDrawer(onNavigate: (String) -> Unit, onClose: () -> Unit, modifier: Modif
                     Text(text = "Dark Mode", style = MaterialTheme.typography.bodyMedium)
                 }
                 Switch(
-                    checked = isDarkMode,
-                    onCheckedChange = { isDarkMode = it },
+                    checked = preference.isDarkMode,
+                    onCheckedChange = { viewModel.toggleDarkMode(it) },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MaterialTheme.colorScheme.primary,
                         checkedTrackColor = MaterialTheme.colorScheme.primaryContainer

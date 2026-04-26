@@ -3,7 +3,7 @@ package com.example.smarttasktracker.presentation.screen.home.viewmodel
 import com.example.smarttasktracker.domain.model.Quote
 import com.example.smarttasktracker.domain.model.SavedQuote
 import com.example.smarttasktracker.domain.usecase.quotes.QuoteUseCases
-import com.example.smarttasktracker.presentation.screens.home.viewmodel.QuoteViewModel
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

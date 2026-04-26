@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.smarttasktracker.presentation.screens.home.viewmodel.QuoteViewModel
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteViewModel
 import com.example.smarttasktracker.presentation.theme.Primary
 import com.example.smarttasktracker.presentation.theme.TextPrimary
 import com.example.smarttasktracker.presentation.theme.TextSecondary
@@ -108,13 +108,13 @@ fun QuoteCard(viewModel: QuoteViewModel = hiltViewModel()) {
                 Text(
                     text = "\" ${it.text.turncate(70)} \"",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = TextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Start
                 )
                 Text(
                     text = "- ${it.author}",
                     style = MaterialTheme.typography.labelMedium,
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     modifier = Modifier.align(Alignment.End)
                 )
             }

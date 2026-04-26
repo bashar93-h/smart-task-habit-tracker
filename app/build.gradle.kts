@@ -79,12 +79,13 @@ dependencies {
     // Coroutines
     implementation(libs.coroutines)
 
-//    Google fonts
+    // Google fonts
     implementation(libs.google.fonts)
 
     // Feather icons
     implementation(libs.feather.icons)
 
+    implementation(libs.datastore.preferences)
 
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)

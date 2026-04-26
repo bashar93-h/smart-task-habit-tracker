@@ -1,4 +1,4 @@
-package com.example.smarttasktracker.presentation.screens.home.viewmodel
+package com.example.smarttasktracker.presentation.screens.home.viewmodel.quote
 
 import com.example.smarttasktracker.domain.model.Quote
 

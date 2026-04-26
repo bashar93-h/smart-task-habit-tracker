@@ -20,15 +20,26 @@ val PrimaryLight = Color(0xFFFDE8F5)
 val PrimaryContainer = Color(0xFFFFD6E7)
 val OnPrimaryContainer = Color(0xFF4A0028)
 
+val DarkPrimaryContainer = Color(0xFF5A2A40)
+val DarkOnPrimaryContainer = Color(0xFFFFD6E7)
+
 // Background & Surface
 val Background = Color(0xFFFFF5F8)
 val Surface = Color(0xFFFFFFFF)
 val SurfaceVariant = Color(0xFFF7F0F4)
+
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E1E)
+val DarkSurfaceVariant = Color(0xFF2A2A2A)
+
 // text colors
 val TextPrimary = Color(0xFF1C1B1F)
 val TextSecondary = Color(0xFF6E6A75)
 val TextMuted = Color(0xFFB89AB5)
 val TextOnPrimary = Color(0xFFFFFFFF)
+
+val DarkTextPrimary = Color(0xFFEAE6F0)
+val DarkTextSecondary = Color(0xFFB0AAB8)
 
 // top bar
 val TopBarBg = Color(0xFFFFFFFF)

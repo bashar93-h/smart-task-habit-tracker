@@ -23,6 +23,7 @@ coroutines = "1.7.3"
 ksp = "2.0.21-1.0.28"
 google-fonts = "1.10.5"
 compose-icons = "1.1.0"
+datastore = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
 
 # Navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
@@ -65,6 +67,8 @@ coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", vers
 google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "google-fonts" }
 # Feather Icons
 feather-icons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "compose-icons" }
+# Data sotre
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 # Testing Libs
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
