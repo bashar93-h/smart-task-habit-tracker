@@ -51,7 +51,7 @@ fun TasksScreen(
     val filteredTasks = remember(selectedFilter, tasks.toList()) {
         val today = LocalDate.now()
         when (selectedFilter) {
-            TaskFilter.ALL -> tasks.filter { !it.isCompleted }
+            TaskFilter.ALL -> tasks
             TaskFilter.TODAY -> tasks.filter { it.date == today && !it.isCompleted }
             TaskFilter.UPCOMING -> tasks.filter { it.date.isAfter(today) && !it.isCompleted }
             TaskFilter.COMPLETED -> tasks.filter { it.isCompleted }

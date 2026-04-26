@@ -73,7 +73,7 @@ fun AppBottomBar(navController: NavController?) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
-        containerColor = TopBarBg,
+        containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
         modifier = Modifier
             .fillMaxWidth()
@@ -93,9 +93,9 @@ fun AppBottomBar(navController: NavController?) {
 
             val labelColor by animateColorAsState(
                 targetValue = if (isSelected)
-                    Primary
+                    MaterialTheme.colorScheme.primary
                 else
-                    TextPrimary,
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 animationSpec = tween(300),
                 label = "labelColor"
             )
@@ -134,9 +134,11 @@ fun AppBottomBar(navController: NavController?) {
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Primary,
-                    unselectedIconColor = TextSecondary,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     indicatorColor = Color.Transparent,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurface,
+                    selectedTextColor = MaterialTheme.colorScheme.primary
                 ),
                 modifier = Modifier.padding(0.dp)
             )

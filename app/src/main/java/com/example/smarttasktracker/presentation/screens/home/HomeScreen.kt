@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +26,6 @@ import com.example.smarttasktracker.domain.model.HabitItem
 import com.example.smarttasktracker.domain.model.TaskItem
 import com.example.smarttasktracker.presentation.components.AppBottomBar
 import com.example.smarttasktracker.presentation.components.AppDrawer
-import com.example.smarttasktracker.presentation.mock.staticQuote
 import com.example.smarttasktracker.presentation.screens.habits.HabitsViewModel
 import com.example.smarttasktracker.presentation.screens.habits.addEdit.AddEditHabitSheet
 import com.example.smarttasktracker.presentation.screens.home.components.ExpandableFab
@@ -45,7 +43,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     navController: NavController?,
     tasksViewModel: TasksViewModel = hiltViewModel(),
-    habitsViewModel: HabitsViewModel = hiltViewModel()
+    habitsViewModel: HabitsViewModel = hiltViewModel(),
 ) {
     val tasks = tasksViewModel.tasks.collectAsState().value
     val habits = habitsViewModel.habits.collectAsState().value

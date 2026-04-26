@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.smarttasktracker.presentation.screens.home.viewmodel.QuoteViewModel
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteViewModel
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Heart
