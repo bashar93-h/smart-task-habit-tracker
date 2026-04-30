@@ -4,15 +4,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.smarttasktracker.presentation.mock.mockHabits
-import com.example.smarttasktracker.presentation.mock.mockTasks
 import com.example.smarttasktracker.presentation.screens.about.AboutScreen
 import com.example.smarttasktracker.presentation.screens.addEditTask.AddEditTaskScreen
 import com.example.smarttasktracker.presentation.screens.addHabit.AddHabitScreen
@@ -30,16 +26,21 @@ import com.example.smarttasktracker.presentation.screens.tasks.list.TasksScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val habits = remember { mockHabits.toMutableStateList() }
 
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route, exitTransition = { fadeOut(animationSpec = tween(500)) }) {
             SplashScreen(navController)
         }
-        composable(Screen.Home.route, enterTransition = { fadeIn(animationSpec = tween(500)) }) {
+        composable(
+            Screen.Home.route,
+            enterTransition = { fadeIn(animationSpec = tween(250)) },
+            exitTransition = { fadeOut(animationSpec = tween(250)) }) {
             HomeScreen(navController)
         }
-        composable(Screen.Tasks.route) {
+        composable(
+            Screen.Tasks.route,
+            enterTransition = { fadeIn(animationSpec = tween(250)) },
+            exitTransition = { fadeOut(animationSpec = tween(250)) }) {
             TasksScreen(navController)
         }
         composable(
@@ -59,7 +60,10 @@ fun AppNavigation() {
         composable(Screen.AddEditTask.route) {
             AddEditTaskScreen(navController)
         }
-        composable(Screen.Habits.route) {
+        composable(
+            Screen.Habits.route,
+            enterTransition = { fadeIn(animationSpec = tween(250)) },
+            exitTransition = { fadeOut(animationSpec = tween(250)) }) {
             HabitsScreen(navController)
         }
         composable(Screen.AddHabit.route) {

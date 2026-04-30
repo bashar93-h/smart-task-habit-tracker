@@ -28,6 +28,6 @@ class QuoteRepositoryImpl @Inject constructor(
     override suspend fun insertQuote(savedQuote: SavedQuote) =
         quoteDao.insertQuote(savedQuote.toEntity())
 
-    override suspend fun deleteQuote(savedQuote: SavedQuote) =
+    override suspend fun  deleteQuote(savedQuote: SavedQuote) =
         quoteDao.deleteQuote(savedQuote.toEntity())
 }

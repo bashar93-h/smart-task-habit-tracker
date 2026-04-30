@@ -34,7 +34,12 @@ import compose.icons.feathericons.Heart
 import compose.icons.feathericons.X
 
 @Composable
-fun QuoteDialog(quote: Quote, onDismiss: () -> Unit, onSaveToFavorites: () -> Unit) {
+fun QuoteDialog(
+    quote: Quote,
+    onDismiss: () -> Unit,
+    isSaved: Boolean,
+    onSaveToFavorites: () -> Unit
+) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
             shape = RoundedCornerShape(24.dp),
@@ -106,21 +111,23 @@ fun QuoteDialog(quote: Quote, onDismiss: () -> Unit, onSaveToFavorites: () -> Un
                     ) {
                         Text(text = "Close", style = MaterialTheme.typography.labelMedium)
                     }
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    if (!isSaved) {
+                        Button(
+                            onClick = { onSaveToFavorites() },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp)
                         ) {
-                            Icon(
-                                imageVector = FeatherIcons.Heart,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Text(text = "Save", style = MaterialTheme.typography.labelMedium)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    imageVector = FeatherIcons.Heart,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Text(text = "Save", style = MaterialTheme.typography.labelMedium)
+                            }
                         }
                     }
                 }
@@ -133,6 +140,6 @@ fun QuoteDialog(quote: Quote, onDismiss: () -> Unit, onSaveToFavorites: () -> Un
 @Composable
 fun QuoteDialogPreview() {
     SmartTaskTrackerTheme() {
-        QuoteDialog(quote = staticQuote, onDismiss = {}, onSaveToFavorites = {})
+        QuoteDialog(quote = staticQuote, onDismiss = {}, isSaved = false, onSaveToFavorites = {})
     }
 }

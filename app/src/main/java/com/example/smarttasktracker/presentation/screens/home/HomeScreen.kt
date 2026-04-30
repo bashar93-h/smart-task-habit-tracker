@@ -1,5 +1,6 @@
 package com.example.smarttasktracker.presentation.screens.home
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +37,8 @@ import com.example.smarttasktracker.presentation.screens.home.components.Motivat
 import com.example.smarttasktracker.presentation.screens.home.components.QuoteCard
 import com.example.smarttasktracker.presentation.screens.home.components.TodayActivitySection
 import com.example.smarttasktracker.presentation.screens.home.components.TodayHabitsSection
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteEvent
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteViewModel
 import com.example.smarttasktracker.presentation.screens.tasks.TasksViewModel
 import com.example.smarttasktracker.presentation.screens.tasks.addEdit.AddEditTaskSheet
 import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
@@ -44,7 +49,9 @@ fun HomeScreen(
     navController: NavController?,
     tasksViewModel: TasksViewModel = hiltViewModel(),
     habitsViewModel: HabitsViewModel = hiltViewModel(),
+    quoteViewModel: QuoteViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val tasks = tasksViewModel.tasks.collectAsState().value
     val habits = habitsViewModel.habits.collectAsState().value
 
@@ -77,6 +84,16 @@ fun HomeScreen(
                 habitsViewModel.addHabit(newHabit)
                 showAddHabitSheet = false
             })
+    }
+
+    LaunchedEffect(Unit) {
+        quoteViewModel.event.collect { event ->
+            when (event) {
+                is QuoteEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {

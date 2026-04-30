@@ -87,8 +87,12 @@ dependencies {
 
     implementation(libs.datastore.preferences)
 
+
+
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

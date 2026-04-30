@@ -15,9 +15,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smarttasktracker.presentation.components.AppTopBar
-import com.example.smarttasktracker.presentation.mock.mockSavedQuotes
+import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteEvent
 import com.example.smarttasktracker.presentation.screens.home.viewmodel.quote.QuoteViewModel
 import com.example.smarttasktracker.presentation.screens.savedQuotes.components.EmptyQuoteState
 import com.example.smarttasktracker.presentation.screens.savedQuotes.components.SavedQuoteCard
@@ -35,6 +34,16 @@ import com.example.smarttasktracker.presentation.theme.SmartTaskTrackerTheme
 fun SavedQuotesScreen(navController: NavController?, viewModel: QuoteViewModel = hiltViewModel()) {
     val quotes = viewModel.quotes.collectAsState().value
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is QuoteEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
     Scaffold(topBar = {
         AppTopBar("Saved Quotes", onBackClick = { navController?.popBackStack() })

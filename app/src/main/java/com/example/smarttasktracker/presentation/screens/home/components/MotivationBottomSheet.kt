@@ -53,6 +53,7 @@ fun MotivationBottomSheet(
 ) {
 
     val state by viewModel.state.collectAsState()
+    val quotes by viewModel.quotes.collectAsState()
     val currentQuote = state.quote
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -194,25 +195,26 @@ fun MotivationBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                OutlinedButton(
-                    onClick = {
-                        currentQuote?.let { viewModel.addQuote(it) }
-                    },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                if (currentQuote != null && !quotes.any { it.text == currentQuote.text })
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.addQuote(currentQuote)
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(
-                            imageVector = FeatherIcons.Heart,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Text(text = "Save", style = MaterialTheme.typography.labelMedium)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(
+                                imageVector = FeatherIcons.Heart,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Text(text = "Save", style = MaterialTheme.typography.labelMedium)
+                        }
                     }
-                }
                 Button(
                     onClick = { viewModel.getRandomQuote() },
                     modifier = Modifier.weight(1f),
