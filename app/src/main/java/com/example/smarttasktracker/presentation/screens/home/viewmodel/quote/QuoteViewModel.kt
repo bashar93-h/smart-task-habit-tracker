@@ -6,9 +6,11 @@ import com.example.smarttasktracker.domain.model.Quote
 import com.example.smarttasktracker.domain.model.SavedQuote
 import com.example.smarttasktracker.domain.usecase.quotes.QuoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +22,10 @@ class QuoteViewModel @Inject constructor(private val useCases: QuoteUseCases) :
 
     private val _quotes = MutableStateFlow<List<SavedQuote>>(emptyList())
     val quotes = _quotes.asStateFlow()
+
+    private val _event =
+        Channel<QuoteEvent>() // Channel generate event that consumed once and gone(doesn't show again on screen rotation)
+    val event = _event.receiveAsFlow()
 
     init {
         getRandomQuote()
@@ -55,7 +61,6 @@ class QuoteViewModel @Inject constructor(private val useCases: QuoteUseCases) :
                         quote = null
                     )
             }
-
         }
     }
 
@@ -67,13 +72,27 @@ class QuoteViewModel @Inject constructor(private val useCases: QuoteUseCases) :
 
     fun addQuote(quote: Quote) {
         viewModelScope.launch {
-            useCases.insertQuote(quote)
+            try {
+                useCases.insertQuote(quote)
+                _event.send(QuoteEvent.ShowToast("Quote saved to favorites"))
+            } catch (e: Exception) {
+                _event.send(QuoteEvent.ShowToast("Failed to save quote"))
+            }
         }
     }
 
     fun deleteQuote(savedQuote: SavedQuote) {
         viewModelScope.launch {
-            useCases.deleteQuote(savedQuote)
+            try {
+                useCases.deleteQuote(savedQuote)
+                _event.send(QuoteEvent.ShowToast("Quote removed from favorites"))
+            } catch (e: Exception) {
+                _event.send(QuoteEvent.ShowToast("Failed to remove quote"))
+            }
         }
+    }
+
+    fun isQuoteSaved(quote: Quote): Boolean {
+        return _quotes.value.any { it.text == quote.text }
     }
 }

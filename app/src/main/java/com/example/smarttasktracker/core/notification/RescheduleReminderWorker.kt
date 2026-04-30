@@ -33,8 +33,9 @@ class RescheduleReminderWorker @AssistedInject constructor(
 
     companion object {
         fun enqueue(context: Context) {
-            // we create a request to run the worker
+            // we create a one time request to run the worker
             val request = OneTimeWorkRequestBuilder<RescheduleReminderWorker>().build()
+            // schedules the work with WorkManager
             WorkManager.getInstance(context).enqueue(request)
         }
     }

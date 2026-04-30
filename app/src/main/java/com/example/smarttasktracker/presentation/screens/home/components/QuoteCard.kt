@@ -39,13 +39,15 @@ import compose.icons.feathericons.BookOpen
 fun QuoteCard(viewModel: QuoteViewModel = hiltViewModel()) {
 
     val state by viewModel.state.collectAsState()
+    val quotes by viewModel.quotes.collectAsState()
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog && state.quote != null) {
         QuoteDialog(
             quote = state.quote!!,
             onDismiss = { showDialog = false },
-            onSaveToFavorites = { TODO() })
+            isSaved = quotes.any { it.text == (state.quote!!.text) },
+            onSaveToFavorites = { viewModel.addQuote(state.quote!!) })
     }
 
     Card(
