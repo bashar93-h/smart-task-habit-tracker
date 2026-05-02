@@ -23,6 +23,8 @@ It helps users manage **tasks, habits, and motivation**, with notifications and 
 - Add Habit
 - Motivation
 - Settings
+- Saved Quotes
+- About
 
 ## Project Setup
 1. Clone the repo
